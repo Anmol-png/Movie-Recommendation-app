@@ -1,13 +1,50 @@
 import streamlit as st
-
-st.set_page_config(page_title="Movie Recommendation App 🎥", page_icon="🎬", layout="centered")
-
-st.title("🎬 Movie Recommendation App")
-
-st.markdown("Find movies you’ll love — and build your personal playlist!")
+import base64
 
 # -----------------------------
-# Movie Database (simple demo)
+# Page Config
+# -----------------------------
+st.set_page_config(page_title="🎬 Movie Recommendation App", page_icon="🎥", layout="centered")
+
+# -----------------------------
+# Background Setup
+# -----------------------------
+def add_bg_from_url():
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=1650&q=80");
+            background-attachment: fixed;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            color: white;
+        }}
+        .block-container {{
+            backdrop-filter: blur(6px);
+            background-color: rgba(0, 0, 0, 0.55);
+            border-radius: 20px;
+            padding: 25px;
+        }}
+        h1, h2, h3, h4, h5, h6, label, p {{
+            color: #fff !important;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+add_bg_from_url()
+
+# -----------------------------
+# Title and Intro
+# -----------------------------
+st.title("🎥 Movie Recommendation App")
+st.markdown("Find movies you’ll love — and build your own playlist!")
+
+# -----------------------------
+# Movie Data
 # -----------------------------
 movies = {
     "Funny": {
@@ -43,19 +80,18 @@ movies = {
 }
 
 # -----------------------------
-# User selections
+# Selections
 # -----------------------------
-genre = st.selectbox("Choose movie type 🎭", list(movies.keys()))
-region = st.selectbox("Choose region 🌍", ["Bollywood", "Hollywood"])
+genre = st.selectbox("🎭 Choose movie type", list(movies.keys()))
+region = st.selectbox("🌍 Choose region", ["Bollywood", "Hollywood"])
 
-if st.button("Get Recommendations"):
-    st.subheader(f"🎥 Top 10 {region} {genre} Movies:")
-    recommended = movies[genre][region]
-    for i, movie in enumerate(recommended, start=1):
-        st.write(f"{i}. {movie}")
+if st.button("🎬 Get Recommendations"):
+    st.subheader(f"Top 10 {region} {genre} Movies:")
+    for i, movie in enumerate(movies[genre][region], start=1):
+        st.markdown(f"**{i}. {movie}**")
 
 # -----------------------------
-# Personal Playlist Section
+# Playlist Section
 # -----------------------------
 st.markdown("---")
 st.header("🎵 Your Personal Playlist")
@@ -63,24 +99,26 @@ st.header("🎵 Your Personal Playlist")
 if "playlist" not in st.session_state:
     st.session_state.playlist = []
 
-movie_to_add = st.text_input("Add a movie to your playlist:")
-if st.button("Add Movie"):
-    if movie_to_add:
-        st.session_state.playlist.append(movie_to_add)
-        st.success(f"✅ '{movie_to_add}' added to your playlist!")
-    else:
-        st.warning("⚠️ Please enter a movie name first.")
+movie_to_add = st.text_input("🎞️ Add a movie to your playlist:")
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("Add Movie"):
+        if movie_to_add:
+            st.session_state.playlist.append(movie_to_add)
+            st.success(f"✅ '{movie_to_add}' added to your playlist!")
+        else:
+            st.warning("⚠️ Please enter a movie name first.")
+with col2:
+    if st.button("🗑️ Clear Playlist"):
+        st.session_state.playlist = []
+        st.info("Playlist cleared.")
 
 if st.session_state.playlist:
-    st.subheader("Your Playlist:")
+    st.subheader("🎬 Your Playlist:")
     for idx, movie in enumerate(st.session_state.playlist, start=1):
-        st.write(f"{idx}. {movie}")
-
-    if st.button("Clear Playlist"):
-        st.session_state.playlist = []
-        st.info("🗑️ Playlist cleared.")
+        st.markdown(f"**{idx}. {movie}**")
 else:
-    st.caption("Your playlist is empty. Add some movies you like!")
+    st.caption("Your playlist is empty. Add your favorite movies!")
 
 st.markdown("---")
 st.caption("Made with ❤️ using Streamlit")
