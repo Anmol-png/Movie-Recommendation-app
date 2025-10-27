@@ -1,47 +1,68 @@
 import streamlit as st
-import base64
 
 # -----------------------------
-# Page Config
+# Page Configuration
 # -----------------------------
 st.set_page_config(page_title="🎬 Movie Recommendation App", page_icon="🎥", layout="centered")
 
 # -----------------------------
-# Background Setup
+# Mode Selection (Dark / Light)
 # -----------------------------
-def add_bg_from_url():
+mode = st.radio("🌗 Choose Theme Mode:", ["Dark Mode", "Light Mode"])
+
+if mode == "Dark Mode":
+    bg_url = "https://images.unsplash.com/photo-1502136969935-8d0710f237f7?auto=format&fit=crop&w=1650&q=80"
+    text_color = "white"
+    box_color = "rgba(0, 0, 0, 0.65)"
+else:
+    bg_url = "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1650&q=80"
+    text_color = "black"
+    box_color = "rgba(255, 255, 255, 0.75)"
+
+# -----------------------------
+# Background Styling
+# -----------------------------
+def set_bg_style():
     st.markdown(
         f"""
         <style>
         .stApp {{
-            background-image: url("https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=1650&q=80");
+            background-image: url("{bg_url}");
             background-attachment: fixed;
             background-size: cover;
-            background-repeat: no-repeat;
             background-position: center;
-            color: white;
         }}
         .block-container {{
             backdrop-filter: blur(6px);
-            background-color: rgba(0, 0, 0, 0.55);
+            background-color: {box_color};
             border-radius: 20px;
             padding: 25px;
         }}
-        h1, h2, h3, h4, h5, h6, label, p {{
-            color: #fff !important;
+        h1, h2, h3, h4, h5, h6, label, p, span, div {{
+            color: {text_color} !important;
+        }}
+        .stButton button {{
+            background-color: #ff4b4b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5em 1em;
+        }}
+        .stButton button:hover {{
+            background-color: #ff7777;
         }}
         </style>
         """,
         unsafe_allow_html=True
     )
 
-add_bg_from_url()
+set_bg_style()
 
 # -----------------------------
-# Title and Intro
+# App Title
 # -----------------------------
-st.title("🎥 Movie Recommendation App")
-st.markdown("Find movies you’ll love — and build your own playlist!")
+st.title("🎬 Movie Recommendation App")
+st.markdown("Find movies you’ll love — and build your own playlist! 🍿")
 
 # -----------------------------
 # Movie Data
@@ -80,7 +101,7 @@ movies = {
 }
 
 # -----------------------------
-# Selections
+# Movie Selection
 # -----------------------------
 genre = st.selectbox("🎭 Choose movie type", list(movies.keys()))
 region = st.selectbox("🌍 Choose region", ["Bollywood", "Hollywood"])
